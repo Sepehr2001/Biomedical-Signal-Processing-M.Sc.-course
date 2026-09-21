@@ -1,0 +1,558 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>main</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-21">
+<meta name="DC.source" content="main.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Load data</a>
+</li>
+<li>
+<a href="#3">Raw signal baseline removal (remove signal mean)</a>
+</li>
+<li>
+<a href="#4">Optional standardization for adaptive filtering stability</a>
+</li>
+<li>
+<a href="#5">Time domain Visualization</a>
+</li>
+<li>
+<a href="#6">LMS adaptive filtering</a>
+</li>
+<li>
+<a href="#7">RLS adaptive filtering</a>
+</li>
+<li>
+<a href="#8">LMS outputs</a>
+</li>
+<li>
+<a href="#9">RLS outputs</a>
+</li>
+<li>
+<a href="#10">Convergence curves</a>
+</li>
+<li>
+<a href="#11">Choose best LMS and best RLS automatically</a>
+</li>
+<li>
+<a href="#12">Figure 1: Chest + Abdominal + Best LMS output</a>
+</li>
+<li>
+<a href="#13">Figure 2: Chest + Abdominal + Best RLS output</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">clc; clear; close <span class="string">all</span>;
+</pre>
+<h2 id="2">Load data</h2>
+<pre class="codeinput">load(<span class="string">'M_F_ECG.mat'</span>);   <span class="comment">% must contain S_chest and S_abdominal</span>
+S_chest = S_chest(:);
+S_abdominal = S_abdomen(:);
+
+N = length(S_chest);
+Fs = 500;
+t = (0:N-1)/Fs;
+</pre>
+<h2 id="3">Raw signal baseline removal (remove signal mean)</h2>
+<pre class="codeinput">x_raw = S_chest - mean(S_chest);
+d_raw = S_abdominal - mean(S_abdominal);
+</pre>
+<h2 id="4">Optional standardization for adaptive filtering stability</h2>
+<pre class="codeinput">x = x_raw / std(x_raw);
+d = d_raw / std(d_raw);
+</pre>
+<h2 id="5">Time domain Visualization</h2>
+<pre class="codeinput">figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'Chest vs abdominal ECG'</span>);
+
+subplot(2,1,1);
+plot(t, x, <span class="string">'b'</span>);
+grid <span class="string">on</span>;
+title(<span class="string">'Chest ECG'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+
+subplot(2,1,2);
+plot(t ,d, <span class="string">'k'</span>);
+grid <span class="string">on</span>;
+title(<span class="string">'Abdominal ECG'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+</pre>
+<img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="6">LMS adaptive filtering</h2>
+<pre class="codeinput">M = 10;
+mu_vals = [0.00001 0.0005 0.001 0.003 0.0055];
+errWinSize =800;
+
+lms_outputs = cell(length(mu_vals),1);
+lms_mse = cell(length(mu_vals),1);
+
+<span class="keyword">for</span> k = 1:length(mu_vals)
+    mu = mu_vals(k);
+    w = zeros(M,1);
+    y = zeros(N,1);
+    e = zeros(N,1);
+    mse = zeros(N,1);
+
+    <span class="keyword">for</span> n = M:N
+        u = x(n:-1:n-M+1);
+        y(n) = w' * u;
+        e(n) = d(n) - y(n);
+        w = w + 2*mu*e(n)*u;
+        mse(n) = mean(e(max(1,n-errWinSize):n).^2);
+    <span class="keyword">end</span>
+
+    lms_outputs{k} = e;
+    lms_mse{k} = mse;
+<span class="keyword">end</span>
+</pre>
+<h2 id="7">RLS adaptive filtering</h2>
+<pre class="codeinput">M_rls = 10;
+lambda_vals = [0.7 0.8 0.9 0.95 0.99 0.9999];
+delta = 1;
+
+rls_outputs = cell(length(lambda_vals),1);
+rls_mse = cell(length(lambda_vals),1);
+
+<span class="keyword">for</span> k = 1:length(lambda_vals)
+    lambda = lambda_vals(k);
+    w = zeros(M_rls,1);
+    P = (1/delta) * eye(M_rls);
+    y = zeros(N,1);
+    e = zeros(N,1);
+    mse = zeros(N,1);
+
+    <span class="keyword">for</span> n = M_rls:N
+        u = x(n:-1:n-M_rls+1);
+        y(n) = w' * u;
+        e(n) = d(n) - y(n);
+        gain = (P*u) / (lambda + u'*P*u);
+        w = w + gain * e(n);
+        P = (P - gain*u'*P) / lambda;
+        mse(n) = mean(e(max(1,n-errWinSize):n).^2);
+    <span class="keyword">end</span>
+
+    rls_outputs{k} = e;
+    rls_mse{k} = mse;
+<span class="keyword">end</span>
+</pre>
+<h2 id="8">LMS outputs</h2>
+<pre class="codeinput">Lshow = N;
+figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'LMS Estimated Fetal ECG'</span>);
+<span class="keyword">for</span> k = 1:length(mu_vals)
+    subplot(length(mu_vals),1,k);
+    plot(t(1:Lshow), lms_outputs{k}(1:Lshow), <span class="string">'k'</span>);
+    grid <span class="string">on</span>;
+    title([<span class="string">'LMS Output, \mu = '</span> num2str(mu_vals(k))]);
+    xlabel(<span class="string">'Time (s)'</span>);
+    ylabel(<span class="string">'Amplitude'</span>);
+    xlim([4 5])
+
+<span class="keyword">end</span>
+</pre>
+<img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="9">RLS outputs</h2>
+<pre class="codeinput">figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'RLS Estimated Fetal ECG'</span>);
+<span class="keyword">for</span> k = 1:length(lambda_vals)
+    subplot(length(lambda_vals),1,k);
+    plot(t(1:Lshow), rls_outputs{k}(1:Lshow), <span class="string">'Color'</span>, [0 0 1]);
+    grid <span class="string">on</span>;
+    title([<span class="string">'RLS Output, \lambda = '</span> num2str(lambda_vals(k))]);
+    xlabel(<span class="string">'Time (s)'</span>);
+    ylabel(<span class="string">'Amplitude'</span>);
+    xlim([4 5])
+<span class="keyword">end</span>
+</pre>
+<img vspace="5" hspace="5" src="main_03.png" alt=""> <h2 id="10">Convergence curves</h2>
+<pre class="codeinput">figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'Convergence Curves'</span>);
+
+subplot(2,1,1);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> k = 1:length(mu_vals)
+    plot(t, lms_mse{k}, <span class="string">'LineWidth'</span>, 1);
+<span class="keyword">end</span>
+grid <span class="string">on</span>;
+title(<span class="string">'LMS Moving MSE'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'MSE'</span>);
+legend(arrayfun(@(v) [<span class="string">'\mu='</span> num2str(v)], mu_vals, <span class="string">'UniformOutput'</span>, false));
+
+
+subplot(2,1,2);
+hold <span class="string">on</span>;
+<span class="keyword">for</span> k = 1:length(lambda_vals)
+    plot(t, rls_mse{k}, <span class="string">'LineWidth'</span>, 1);
+<span class="keyword">end</span>
+grid <span class="string">on</span>;
+title(<span class="string">'RLS Moving MSE'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'MSE'</span>);
+legend(arrayfun(@(v) [<span class="string">'\lambda='</span> num2str(v)], lambda_vals, <span class="string">'UniformOutput'</span>, false));
+</pre>
+<img vspace="5" hspace="5" src="main_04.png" alt=""> <h2 id="11">Choose best LMS and best RLS automatically</h2>
+<pre class="codeinput">final_lms_mse = zeros(length(mu_vals),1);
+<span class="keyword">for</span> k = 1:length(mu_vals)
+    final_lms_mse(k) = mean(lms_outputs{k}.^2);
+<span class="keyword">end</span>
+[~, best_lms_idx] = min(final_lms_mse);
+
+final_rls_mse = zeros(length(lambda_vals),1);
+<span class="keyword">for</span> k = 1:length(lambda_vals)
+    final_rls_mse(k) = mean(rls_outputs{k}.^2);
+<span class="keyword">end</span>
+[~, best_rls_idx] = min(final_rls_mse);
+
+best_lms_signal = lms_outputs{best_lms_idx};
+best_rls_signal = rls_outputs{best_rls_idx};
+</pre>
+<h2 id="12">Figure 1: Chest + Abdominal + Best LMS output</h2>
+<pre class="codeinput">figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'Best LMS Result'</span>);
+
+subplot(3,1,1);
+plot(t, x, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(<span class="string">'Chest ECG'</span>, <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+
+subplot(3,1,2);
+plot(t, d, <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(<span class="string">'Abdominal ECG'</span>, <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+
+subplot(3,1,3);
+plot(t, best_lms_signal, <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(sprintf(<span class="string">'Denoised Signal using Best LMS (\\mu = %.4f)'</span>, mu_vals(best_lms_idx)), <span class="keyword">...</span>
+      <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+</pre>
+<img vspace="5" hspace="5" src="main_05.png" alt=""> <h2 id="13">Figure 2: Chest + Abdominal + Best RLS output</h2>
+<pre class="codeinput">figure(<span class="string">'Color'</span>,<span class="string">'w'</span>,<span class="string">'Name'</span>,<span class="string">'Best RLS Result'</span>);
+
+subplot(3,1,1);
+plot(t, x, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(<span class="string">'Chest ECG'</span>, <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+
+subplot(3,1,2);
+plot(t, d, <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(<span class="string">'Abdominal ECG'</span>, <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+
+subplot(3,1,3);
+plot(t, best_rls_signal, <span class="string">'Color'</span>, [0 0.5 0], <span class="string">'LineWidth'</span>, 1);
+grid <span class="string">on</span>;
+title(sprintf(<span class="string">'Denoised Signal using Best RLS (\\lambda = %.4f)'</span>, lambda_vals(best_rls_idx)), <span class="keyword">...</span>
+      <span class="string">'FontSize'</span>, 11, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Amplitude'</span>);
+xlim([5 8])
+</pre>
+<img vspace="5" hspace="5" src="main_06.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+clc; clear; close all;
+
+%% Load data
+load('M_F_ECG.mat');   % must contain S_chest and S_abdominal
+S_chest = S_chest(:);
+S_abdominal = S_abdomen(:);
+
+N = length(S_chest);
+Fs = 500;
+t = (0:N-1)/Fs;
+
+%% Raw signal baseline removal (remove signal mean)
+x_raw = S_chest - mean(S_chest);
+d_raw = S_abdominal - mean(S_abdominal);
+
+%% Optional standardization for adaptive filtering stability
+x = x_raw / std(x_raw);
+d = d_raw / std(d_raw);
+
+%% Time domain Visualization
+
+figure('Color','w','Name','Chest vs abdominal ECG');
+
+subplot(2,1,1);
+plot(t, x, 'b');
+grid on;
+title('Chest ECG');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+subplot(2,1,2);
+plot(t ,d, 'k');
+grid on;
+title('Abdominal ECG');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+
+%% LMS adaptive filtering
+M = 10;
+mu_vals = [0.00001 0.0005 0.001 0.003 0.0055];
+errWinSize =800;
+
+lms_outputs = cell(length(mu_vals),1);
+lms_mse = cell(length(mu_vals),1);
+
+for k = 1:length(mu_vals)
+    mu = mu_vals(k);
+    w = zeros(M,1);
+    y = zeros(N,1);
+    e = zeros(N,1);
+    mse = zeros(N,1);
+
+    for n = M:N
+        u = x(n:-1:n-M+1);
+        y(n) = w' * u;
+        e(n) = d(n) - y(n);
+        w = w + 2*mu*e(n)*u;
+        mse(n) = mean(e(max(1,n-errWinSize):n).^2);
+    end
+
+    lms_outputs{k} = e;
+    lms_mse{k} = mse;
+end
+
+%% RLS adaptive filtering
+M_rls = 10;
+lambda_vals = [0.7 0.8 0.9 0.95 0.99 0.9999];
+delta = 1;
+
+rls_outputs = cell(length(lambda_vals),1);
+rls_mse = cell(length(lambda_vals),1);
+
+for k = 1:length(lambda_vals)
+    lambda = lambda_vals(k);
+    w = zeros(M_rls,1);
+    P = (1/delta) * eye(M_rls);
+    y = zeros(N,1);
+    e = zeros(N,1);
+    mse = zeros(N,1);
+
+    for n = M_rls:N
+        u = x(n:-1:n-M_rls+1);
+        y(n) = w' * u;
+        e(n) = d(n) - y(n);
+        gain = (P*u) / (lambda + u'*P*u);
+        w = w + gain * e(n);
+        P = (P - gain*u'*P) / lambda;
+        mse(n) = mean(e(max(1,n-errWinSize):n).^2);
+    end
+
+    rls_outputs{k} = e;
+    rls_mse{k} = mse;
+end
+
+%% LMS outputs
+Lshow = N;
+figure('Color','w','Name','LMS Estimated Fetal ECG');
+for k = 1:length(mu_vals)
+    subplot(length(mu_vals),1,k);
+    plot(t(1:Lshow), lms_outputs{k}(1:Lshow), 'k');
+    grid on;
+    title(['LMS Output, \mu = ' num2str(mu_vals(k))]);
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+    xlim([4 5])
+
+end
+
+%% RLS outputs
+figure('Color','w','Name','RLS Estimated Fetal ECG');
+for k = 1:length(lambda_vals)
+    subplot(length(lambda_vals),1,k);
+    plot(t(1:Lshow), rls_outputs{k}(1:Lshow), 'Color', [0 0 1]);
+    grid on;
+    title(['RLS Output, \lambda = ' num2str(lambda_vals(k))]);
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+    xlim([4 5])
+end
+
+%% Convergence curves
+figure('Color','w','Name','Convergence Curves');
+
+subplot(2,1,1);
+hold on;
+for k = 1:length(mu_vals)
+    plot(t, lms_mse{k}, 'LineWidth', 1);
+end
+grid on;
+title('LMS Moving MSE');
+xlabel('Time (s)');
+ylabel('MSE');
+legend(arrayfun(@(v) ['\mu=' num2str(v)], mu_vals, 'UniformOutput', false));
+
+
+subplot(2,1,2);
+hold on;
+for k = 1:length(lambda_vals)
+    plot(t, rls_mse{k}, 'LineWidth', 1);
+end
+grid on;
+title('RLS Moving MSE');
+xlabel('Time (s)');
+ylabel('MSE');
+legend(arrayfun(@(v) ['\lambda=' num2str(v)], lambda_vals, 'UniformOutput', false));
+
+%% Choose best LMS and best RLS automatically
+final_lms_mse = zeros(length(mu_vals),1);
+for k = 1:length(mu_vals)
+    final_lms_mse(k) = mean(lms_outputs{k}.^2);
+end
+[~, best_lms_idx] = min(final_lms_mse);
+
+final_rls_mse = zeros(length(lambda_vals),1);
+for k = 1:length(lambda_vals)
+    final_rls_mse(k) = mean(rls_outputs{k}.^2);
+end
+[~, best_rls_idx] = min(final_rls_mse);
+
+best_lms_signal = lms_outputs{best_lms_idx};
+best_rls_signal = rls_outputs{best_rls_idx};
+
+%% Figure 1: Chest + Abdominal + Best LMS output
+figure('Color','w','Name','Best LMS Result');
+
+subplot(3,1,1);
+plot(t, x, 'b', 'LineWidth', 1);
+grid on;
+title('Chest ECG', 'FontSize', 11, 'FontWeight', 'bold');
+ylabel('Amplitude');
+xlim([5 8])
+
+subplot(3,1,2);
+plot(t, d, 'k', 'LineWidth', 1);
+grid on;
+title('Abdominal ECG', 'FontSize', 11, 'FontWeight', 'bold');
+ylabel('Amplitude');
+xlim([5 8])
+
+subplot(3,1,3);
+plot(t, best_lms_signal, 'r', 'LineWidth', 1);
+grid on;
+title(sprintf('Denoised Signal using Best LMS (\\mu = %.4f)', mu_vals(best_lms_idx)), ...
+      'FontSize', 11, 'FontWeight', 'bold');
+xlabel('Time (s)');
+ylabel('Amplitude');
+xlim([5 8])
+
+%% Figure 2: Chest + Abdominal + Best RLS output
+figure('Color','w','Name','Best RLS Result');
+
+subplot(3,1,1);
+plot(t, x, 'b', 'LineWidth', 1);
+grid on;
+title('Chest ECG', 'FontSize', 11, 'FontWeight', 'bold');
+ylabel('Amplitude');
+xlim([5 8])
+
+subplot(3,1,2);
+plot(t, d, 'k', 'LineWidth', 1);
+grid on;
+title('Abdominal ECG', 'FontSize', 11, 'FontWeight', 'bold');
+ylabel('Amplitude');
+xlim([5 8])
+
+subplot(3,1,3);
+plot(t, best_rls_signal, 'Color', [0 0.5 0], 'LineWidth', 1);
+grid on;
+title(sprintf('Denoised Signal using Best RLS (\\lambda = %.4f)', lambda_vals(best_rls_idx)), ...
+      'FontSize', 11, 'FontWeight', 'bold');
+xlabel('Time (s)');
+ylabel('Amplitude');
+xlim([5 8])
+##### SOURCE END #####
+-->
+</body>
+</html>

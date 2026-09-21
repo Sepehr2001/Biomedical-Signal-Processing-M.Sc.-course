@@ -1,0 +1,594 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>subject_comparison</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-21">
+<meta name="DC.source" content="subject_comparison.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Settings</a>
+</li>
+<li>
+<a href="#3">Preallocate results</a>
+</li>
+<li>
+<a href="#4">Loop over subjects</a>
+</li>
+<li>
+<a href="#5">Summary table</a>
+</li>
+<li>
+<a href="#6">Save table</a>
+</li>
+<li>
+<a href="#7">Figure 1: CR comparison across subjects</a>
+</li>
+<li>
+<a href="#8">Figure 2: PRD comparison across subjects</a>
+</li>
+<li>
+<a href="#9">Figure 3: Table in figure form</a>
+</li>
+<li>
+<a href="#10">================= Local functions =================</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">close <span class="string">all</span>; clc; clear;
+</pre>
+<h2 id="2">Settings</h2>
+<pre class="codeinput">fs = 300;
+n_bits = 12;
+beta_list = [2 3 4 5 6];
+
+<span class="comment">% Put your 6 subject files here</span>
+files = {
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0009_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0015_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0016_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0018_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0023_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0028_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0029_8min_signal.csv'</span>
+    <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0030_8min_signal.csv'</span>
+
+};
+
+subject_names = {
+    <span class="string">'S1'</span>
+    <span class="string">'S2'</span>
+    <span class="string">'S3'</span>
+    <span class="string">'S4'</span>
+    <span class="string">'S5'</span>
+    <span class="string">'S6'</span>
+    <span class="string">'S7'</span>
+    <span class="string">'S8'</span>
+
+};
+
+duration_sec = 30;
+n_sel = duration_sec * fs;
+</pre>
+<h2 id="3">Preallocate results</h2>
+<pre class="codeinput">nS = numel(files);
+
+CR_ECG = zeros(nS,1);
+PRD_ECG = zeros(nS,1);
+BestBeta_ECG = zeros(nS,1);
+
+CR_PPG = zeros(nS,1);
+PRD_PPG = zeros(nS,1);
+BestBeta_PPG = zeros(nS,1);
+</pre>
+<h2 id="4">Loop over subjects</h2>
+<pre class="codeinput">
+<span class="keyword">for</span> s = 1:nS
+    T = readtable(files{s});
+
+    ecg = T.ecg_y;
+    ppg = T.pleth_y;
+
+    ecg = ecg(1:min(n_sel, length(ecg)));
+    ppg = ppg(1:min(n_sel, length(ppg)));
+
+    ecg_filt = bandpass_filter(ecg, fs, 0.5, 100);
+    ppg_filt = bandpass_filter(ppg, fs, 0.5, 3.4);
+
+    <span class="comment">% Choose best beta by maximum CR</span>
+    best_cr_ecg = -inf;
+    best_cr_ppg = -inf;
+
+    <span class="keyword">for</span> b = 1:numel(beta_list)
+        beta = beta_list(b);
+
+        [cE, qE, xminE, xmaxE] = compress_signal(ecg_filt, n_bits, beta);
+        sigE_q = dequantize(qE, xminE, xmaxE, n_bits);
+        crE = (length(ecg_filt) * n_bits) / cE.total_bits;
+        prdE = prd_metric(ecg_filt, sigE_q);
+
+        <span class="keyword">if</span> crE &gt; best_cr_ecg
+            best_cr_ecg = crE;
+            BestBeta_ECG(s) = beta;
+            CR_ECG(s) = crE;
+            PRD_ECG(s) = prdE;
+        <span class="keyword">end</span>
+
+        [cP, qP, xminP, xmaxP] = compress_signal(ppg_filt, n_bits, beta);
+        sigP_q = dequantize(qP, xminP, xmaxP, n_bits);
+        crP = (length(ppg_filt) * n_bits) / cP.total_bits;
+        prdP = prd_metric(ppg_filt, sigP_q);
+
+        <span class="keyword">if</span> crP &gt; best_cr_ppg
+            best_cr_ppg = crP;
+            BestBeta_PPG(s) = beta;
+            CR_PPG(s) = crP;
+            PRD_PPG(s) = prdP;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre>
+<h2 id="5">Summary table</h2>
+<pre class="codeinput">ResultTable = table(subject_names(:), BestBeta_ECG, CR_ECG, PRD_ECG, <span class="keyword">...</span>
+                               BestBeta_PPG, CR_PPG, PRD_PPG, <span class="keyword">...</span>
+    <span class="string">'VariableNames'</span>, {<span class="string">'Subject'</span>,<span class="string">'BestBeta_ECG'</span>,<span class="string">'CR_ECG'</span>,<span class="string">'PRD_ECG'</span>, <span class="keyword">...</span>
+                      <span class="string">'BestBeta_PPG'</span>,<span class="string">'CR_PPG'</span>,<span class="string">'PRD_PPG'</span>});
+
+disp(ResultTable);
+</pre>
+<pre class="codeoutput">    Subject    BestBeta_ECG    CR_ECG    PRD_ECG     BestBeta_PPG    CR_PPG    PRD_PPG 
+    _______    ____________    ______    ________    ____________    ______    ________
+
+    {'S1'}          4          2.1123     0.10295         3          3.3158    0.028601
+    {'S2'}          3          2.1696     0.10237         3          3.3494    0.024349
+    {'S3'}          5          1.7653    0.058912         3          3.6018    0.038676
+    {'S4'}          5           1.615    0.057157         3          3.0116    0.025782
+    {'S5'}          4          1.9459    0.056449         3          3.3378    0.024104
+    {'S6'}          5          1.7668    0.077931         3          3.4588    0.027747
+    {'S7'}          3          2.1974    0.073522         2          3.5432    0.027063
+    {'S8'}          3          1.4627    0.084373         3          3.4933    0.031744
+
+</pre>
+<h2 id="6">Save table</h2>
+<pre class="codeinput">writetable(ResultTable, <span class="string">'subject_comparison_results.csv'</span>);
+</pre>
+<h2 id="7">Figure 1: CR comparison across subjects</h2>
+<pre class="codeinput">figure(<span class="string">'Name'</span>,<span class="string">'CR Across Subjects'</span>,<span class="string">'Position'</span>,[100 100 1100 450]);
+
+subplot(1,2,1);
+bar(CR_ECG, <span class="string">'FaceColor'</span>,[0.2 0.4 0.8]);
+set(gca, <span class="string">'XTickLabel'</span>, subject_names, <span class="string">'XTick'</span>,1:nS);
+ylabel(<span class="string">'CR'</span>);
+title(<span class="string">'ECG Compression Ratio Across Subjects'</span>);
+grid <span class="string">on</span>;
+
+subplot(1,2,2);
+bar(CR_PPG, <span class="string">'FaceColor'</span>,[0.8 0.3 0.2]);
+set(gca, <span class="string">'XTickLabel'</span>, subject_names, <span class="string">'XTick'</span>,1:nS);
+ylabel(<span class="string">'CR'</span>);
+title(<span class="string">'PPG Compression Ratio Across Subjects'</span>);
+grid <span class="string">on</span>;
+</pre>
+<img vspace="5" hspace="5" src="subject_comparison_01.png" alt=""> <h2 id="8">Figure 2: PRD comparison across subjects</h2>
+<pre class="codeinput">figure(<span class="string">'Name'</span>,<span class="string">'PRD Across Subjects'</span>,<span class="string">'Position'</span>,[150 150 1100 450]);
+
+subplot(1,2,1);
+bar(PRD_ECG, <span class="string">'FaceColor'</span>,[0.2 0.4 0.8]);
+set(gca, <span class="string">'XTickLabel'</span>, subject_names, <span class="string">'XTick'</span>,1:nS);
+ylabel(<span class="string">'PRD (%)'</span>);
+title(<span class="string">'ECG PRD Across Subjects'</span>);
+grid <span class="string">on</span>;
+
+subplot(1,2,2);
+bar(PRD_PPG, <span class="string">'FaceColor'</span>,[0.8 0.3 0.2]);
+set(gca, <span class="string">'XTickLabel'</span>, subject_names, <span class="string">'XTick'</span>,1:nS);
+ylabel(<span class="string">'PRD (%)'</span>);
+title(<span class="string">'PPG PRD Across Subjects'</span>);
+grid <span class="string">on</span>;
+</pre>
+<img vspace="5" hspace="5" src="subject_comparison_02.png" alt=""> <h2 id="9">Figure 3: Table in figure form</h2>
+<pre class="codeinput">figure(<span class="string">'Name'</span>,<span class="string">'Subject Comparison Table'</span>,<span class="string">'Position'</span>,[100 100 1200 300]);
+
+dataCell = [table2cell(ResultTable(:,2:end))];   <span class="comment">% numeric columns only</span>
+uitable(<span class="string">'Data'</span>, dataCell, <span class="keyword">...</span>
+    <span class="string">'ColumnName'</span>, ResultTable.Properties.VariableNames(2:end), <span class="keyword">...</span>
+    <span class="string">'RowName'</span>, ResultTable.Subject, <span class="keyword">...</span>
+    <span class="string">'Units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+    <span class="string">'Position'</span>, [0.02 0.05 0.96 0.9]);
+</pre>
+<img vspace="5" hspace="5" src="subject_comparison_03.png" alt=""> <h2 id="10">================= Local functions =================</h2>
+<pre class="codeinput">
+<span class="keyword">function</span> x_filt = bandpass_filter(x, fs, f_low, f_high)
+    [b, a] = butter(2, [f_low f_high]/(fs/2), <span class="string">'bandpass'</span>);
+    x_filt = filtfilt(b, a, x);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [q, xmin, xmax] = quantize_signal(x, n_bits)
+    xmin = min(x); xmax = max(x);
+    levels = 2^n_bits - 1;
+    q = round((x - xmin) / (xmax - xmin) * levels);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> x_rec = dequantize(q, xmin, xmax, n_bits)
+    levels = 2^n_bits - 1;
+    x_rec = double(q) / levels * (xmax - xmin) + xmin;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> val = prd_metric(x, xq)
+    val = 100 * sqrt(sum((x - xq).^2) / sum(x.^2));
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> nbits = bits_needed(x)
+    <span class="keyword">if</span> isempty(x)
+        nbits = 1;
+    <span class="keyword">else</span>
+        m = max(abs(x));
+        <span class="keyword">if</span> m == 0
+            nbits = 1;
+        <span class="keyword">else</span>
+            nbits = ceil(log2(m + 2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta)
+    [q, xmin, xmax] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    <span class="keyword">while</span> i &lt;= n
+        val = d2(i);
+        <span class="keyword">if</span> val == 0
+            run = 0;
+            <span class="keyword">while</span> i &lt;= n &amp;&amp; d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            <span class="keyword">end</span>
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> val &gt;= -beta_max &amp;&amp; val &lt;= beta_max
+                theta(end+1) = val;
+            <span class="keyword">else</span>
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            <span class="keyword">end</span>
+            i = i + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    c.theta = theta;
+    c.psi = psi;
+    c.xi = xi;
+    c.alpha = alpha;
+    c.first_q = q(1);
+    c.first_d1 = d1(1);
+    c.n_samples = length(sig);
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(xi);
+    c.overhead_bits = 2 * n_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+<span class="keyword">end</span>
+</pre>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+close all; clc; clear;
+
+%% Settings
+fs = 300;
+n_bits = 12;
+beta_list = [2 3 4 5 6];
+
+% Put your 6 subject files here
+files = {
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0009_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0015_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0016_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0018_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0023_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0028_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0029_8min_signal.csv'
+    'doi-10.5683-sp2-nlb8it (1)/data/csv/0030_8min_signal.csv'
+
+};
+
+subject_names = {
+    'S1'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+
+};
+
+duration_sec = 30;
+n_sel = duration_sec * fs;
+
+%% Preallocate results
+nS = numel(files);
+
+CR_ECG = zeros(nS,1);
+PRD_ECG = zeros(nS,1);
+BestBeta_ECG = zeros(nS,1);
+
+CR_PPG = zeros(nS,1);
+PRD_PPG = zeros(nS,1);
+BestBeta_PPG = zeros(nS,1);
+
+%% Loop over subjects
+for s = 1:nS
+    T = readtable(files{s});
+
+    ecg = T.ecg_y;
+    ppg = T.pleth_y;
+
+    ecg = ecg(1:min(n_sel, length(ecg)));
+    ppg = ppg(1:min(n_sel, length(ppg)));
+
+    ecg_filt = bandpass_filter(ecg, fs, 0.5, 100);
+    ppg_filt = bandpass_filter(ppg, fs, 0.5, 3.4);
+
+    % Choose best beta by maximum CR
+    best_cr_ecg = -inf;
+    best_cr_ppg = -inf;
+
+    for b = 1:numel(beta_list)
+        beta = beta_list(b);
+
+        [cE, qE, xminE, xmaxE] = compress_signal(ecg_filt, n_bits, beta);
+        sigE_q = dequantize(qE, xminE, xmaxE, n_bits);
+        crE = (length(ecg_filt) * n_bits) / cE.total_bits;
+        prdE = prd_metric(ecg_filt, sigE_q);
+
+        if crE > best_cr_ecg
+            best_cr_ecg = crE;
+            BestBeta_ECG(s) = beta;
+            CR_ECG(s) = crE;
+            PRD_ECG(s) = prdE;
+        end
+
+        [cP, qP, xminP, xmaxP] = compress_signal(ppg_filt, n_bits, beta);
+        sigP_q = dequantize(qP, xminP, xmaxP, n_bits);
+        crP = (length(ppg_filt) * n_bits) / cP.total_bits;
+        prdP = prd_metric(ppg_filt, sigP_q);
+
+        if crP > best_cr_ppg
+            best_cr_ppg = crP;
+            BestBeta_PPG(s) = beta;
+            CR_PPG(s) = crP;
+            PRD_PPG(s) = prdP;
+        end
+    end
+end
+
+%% Summary table
+ResultTable = table(subject_names(:), BestBeta_ECG, CR_ECG, PRD_ECG, ...
+                               BestBeta_PPG, CR_PPG, PRD_PPG, ...
+    'VariableNames', {'Subject','BestBeta_ECG','CR_ECG','PRD_ECG', ...
+                      'BestBeta_PPG','CR_PPG','PRD_PPG'});
+
+disp(ResultTable);
+
+%% Save table
+writetable(ResultTable, 'subject_comparison_results.csv');
+
+%% Figure 1: CR comparison across subjects
+figure('Name','CR Across Subjects','Position',[100 100 1100 450]);
+
+subplot(1,2,1);
+bar(CR_ECG, 'FaceColor',[0.2 0.4 0.8]);
+set(gca, 'XTickLabel', subject_names, 'XTick',1:nS);
+ylabel('CR');
+title('ECG Compression Ratio Across Subjects');
+grid on;
+
+subplot(1,2,2);
+bar(CR_PPG, 'FaceColor',[0.8 0.3 0.2]);
+set(gca, 'XTickLabel', subject_names, 'XTick',1:nS);
+ylabel('CR');
+title('PPG Compression Ratio Across Subjects');
+grid on;
+
+%% Figure 2: PRD comparison across subjects
+figure('Name','PRD Across Subjects','Position',[150 150 1100 450]);
+
+subplot(1,2,1);
+bar(PRD_ECG, 'FaceColor',[0.2 0.4 0.8]);
+set(gca, 'XTickLabel', subject_names, 'XTick',1:nS);
+ylabel('PRD (%)');
+title('ECG PRD Across Subjects');
+grid on;
+
+subplot(1,2,2);
+bar(PRD_PPG, 'FaceColor',[0.8 0.3 0.2]);
+set(gca, 'XTickLabel', subject_names, 'XTick',1:nS);
+ylabel('PRD (%)');
+title('PPG PRD Across Subjects');
+grid on;
+
+%% Figure 3: Table in figure form
+figure('Name','Subject Comparison Table','Position',[100 100 1200 300]);
+
+dataCell = [table2cell(ResultTable(:,2:end))];   % numeric columns only
+uitable('Data', dataCell, ...
+    'ColumnName', ResultTable.Properties.VariableNames(2:end), ...
+    'RowName', ResultTable.Subject, ...
+    'Units', 'normalized', ...
+    'Position', [0.02 0.05 0.96 0.9]);
+
+%% ================= Local functions =================
+function x_filt = bandpass_filter(x, fs, f_low, f_high)
+    [b, a] = butter(2, [f_low f_high]/(fs/2), 'bandpass');
+    x_filt = filtfilt(b, a, x);
+end
+
+function [q, xmin, xmax] = quantize_signal(x, n_bits)
+    xmin = min(x); xmax = max(x);
+    levels = 2^n_bits - 1;
+    q = round((x - xmin) / (xmax - xmin) * levels);
+end
+
+function x_rec = dequantize(q, xmin, xmax, n_bits)
+    levels = 2^n_bits - 1;
+    x_rec = double(q) / levels * (xmax - xmin) + xmin;
+end
+
+function val = prd_metric(x, xq)
+    val = 100 * sqrt(sum((x - xq).^2) / sum(x.^2));
+end
+
+function nbits = bits_needed(x)
+    if isempty(x)
+        nbits = 1;
+    else
+        m = max(abs(x));
+        if m == 0
+            nbits = 1;
+        else
+            nbits = ceil(log2(m + 2));
+        end
+    end
+end
+
+function [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta)
+    [q, xmin, xmax] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    while i <= n
+        val = d2(i);
+        if val == 0
+            run = 0;
+            while i <= n && d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            end
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        else
+            if val >= -beta_max && val <= beta_max
+                theta(end+1) = val;
+            else
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            end
+            i = i + 1;
+        end
+    end
+
+    c.theta = theta;
+    c.psi = psi;
+    c.xi = xi;
+    c.alpha = alpha;
+    c.first_q = q(1);
+    c.first_d1 = d1(1);
+    c.n_samples = length(sig);
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(xi);
+    c.overhead_bits = 2 * n_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+end
+##### SOURCE END #####
+-->
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>single_sub_analysis</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-21">
+<meta name="DC.source" content="single_sub_analysis.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Parameters</a>
+</li>
+<li>
+<a href="#3">Load data</a>
+</li>
+<li>
+<a href="#4">Filter signals once</a>
+</li>
+<li>
+<a href="#5">CR vs beta for 30-sec segment</a>
+</li>
+<li>
+<a href="#6">Best beta reconstruction</a>
+</li>
+<li>
+<a href="#7">Table VI-style CR table</a>
+</li>
+<li>
+<a href="#8">Fig. 11 style: CR vs length for multiple quantization levels</a>
+</li>
+<li>
+<a href="#9">Fig. 12 style: PRD vs quantization level</a>
+</li>
+<li>
+<a href="#10">Best beta summary</a>
+</li>
+<li>
+<a href="#11">===================== Local Functions =====================</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">close <span class="string">all</span>; clc; clear;
+</pre>
+<h2 id="2">Parameters</h2>
+<pre class="codeinput">fs = 300;
+filename = <span class="string">'doi-10.5683-sp2-nlb8it (1)/data/csv/0009_8min_signal.csv'</span>;
+
+duration_sec = 30;
+n_bits = 12;
+beta_list = [2 3 4 5 6];
+
+n_bits_list = [6 8 10 12];
+beta_list_table = [2 3 4 5 6];
+length_list = [2000 5000 10000 20000 30000 40000];
+overhead_bits_table = 2000;
+</pre>
+<h2 id="3">Load data</h2>
+<pre class="codeinput">dataTable = readtable(filename);
+ecg_full = dataTable.ecg_y;
+ppg_full = dataTable.pleth_y;
+
+n_sel = duration_sec * fs;
+ecg = ecg_full(1:n_sel);
+ppg = ppg_full(1:n_sel);
+t = (0:n_sel-1)' / fs;
+</pre>
+<h2 id="4">Filter signals once</h2>
+<pre class="codeinput">ecg_filt = bandpass_filter(ecg, fs, 0.5, 100);
+ppg_filt = bandpass_filter(ppg, fs, 0.5, 3.4);
+
+ecg_filt_full = bandpass_filter(ecg_full, fs, 0.5, 100);
+ppg_filt_full = bandpass_filter(ppg_full, fs, 0.5, 3.4);
+</pre>
+<h2 id="5">CR vs beta for 30-sec segment</h2>
+<pre class="codeinput">results_ecg = compress_evaluate_sweep(ecg_filt, n_bits, beta_list);
+results_ppg = compress_evaluate_sweep(ppg_filt, n_bits, beta_list);
+
+fprintf(<span class="string">'\n--- ECG Results ---\n'</span>); disp(struct2table(results_ecg));
+fprintf(<span class="string">'\n--- PPG Results ---\n'</span>); disp(struct2table(results_ppg));
+
+figure(<span class="string">'Name'</span>,<span class="string">'CR vs Beta'</span>);
+subplot(1,2,1);
+plot([results_ecg.beta], [results_ecg.CR], <span class="string">'-o'</span>, <span class="string">'LineWidth'</span>, 1.5); grid <span class="string">on</span>;
+xlabel(<span class="string">'\beta'</span>); ylabel(<span class="string">'CR'</span>); title(<span class="string">'ECG: CR vs \beta'</span>);
+
+subplot(1,2,2);
+plot([results_ppg.beta], [results_ppg.CR], <span class="string">'-o'</span>, <span class="string">'LineWidth'</span>, 1.5); grid <span class="string">on</span>;
+xlabel(<span class="string">'\beta'</span>); ylabel(<span class="string">'CR'</span>); title(<span class="string">'PPG: CR vs \beta'</span>);
+</pre>
+<pre class="codeoutput">
+--- ECG Results ---
+    beta      CR      PRD_quant    lossless    orig_bits    compressed_bits
+    ____    ______    _________    ________    _________    _______________
+
+     2      1.4398     0.10295      true       1.08e+05          75011     
+     3       1.805     0.10295      true       1.08e+05          59835     
+     4      2.1123     0.10295      true       1.08e+05          51130     
+     5      1.9225     0.10295      true       1.08e+05          56177     
+     6      1.7309     0.10295      true       1.08e+05          62394     
+
+
+--- PPG Results ---
+    beta      CR      PRD_quant    lossless    orig_bits    compressed_bits
+    ____    ______    _________    ________    _________    _______________
+
+     2      3.1995    0.028601      true       1.08e+05          33755     
+     3      3.3158    0.028601      true       1.08e+05          32571     
+     4      2.7664    0.028601      true       1.08e+05          39040     
+     5      2.2909    0.028601      true       1.08e+05          47144     
+     6      1.9548    0.028601      true       1.08e+05          55248     
+
+</pre>
+<img vspace="5" hspace="5" src="single_sub_analysis_01.png" alt=""> <h2 id="6">Best beta reconstruction</h2>
+<pre class="codeinput">[~, idx_ecg] = max([results_ecg.CR]);
+[~, idx_ppg] = max([results_ppg.CR]);
+
+best_beta_ecg = results_ecg(idx_ecg).beta;
+best_beta_ppg = results_ppg(idx_ppg).beta;
+
+[c_ecg, q_ecg, xmin_e, xmax_e] = compress_signal(ecg_filt, n_bits, best_beta_ecg);
+q_rec_ecg = decompress_signal(c_ecg);
+ecg_rec = dequantize(q_rec_ecg, xmin_e, xmax_e, n_bits);
+
+[c_ppg, q_ppg, xmin_p, xmax_p] = compress_signal(ppg_filt, n_bits, best_beta_ppg);
+q_rec_ppg = decompress_signal(c_ppg);
+ppg_rec = dequantize(q_rec_ppg, xmin_p, xmax_p, n_bits);
+
+figure(<span class="string">'Name'</span>,<span class="string">'Original vs Reconstructed'</span>);
+subplot(2,1,1);
+plot(t, ecg_filt, <span class="string">'b'</span>); hold <span class="string">on</span>;
+plot(t, ecg_rec, <span class="string">'r--'</span>);
+legend(<span class="string">'Original'</span>,<span class="string">'Reconstructed'</span>);
+title(sprintf(<span class="string">'ECG (best \\beta=%d, CR=%.2f, PRD=%.4f%%)'</span>, <span class="keyword">...</span>
+    best_beta_ecg, results_ecg(idx_ecg).CR, results_ecg(idx_ecg).PRD_quant));
+xlabel(<span class="string">'Time (s)'</span>); ylabel(<span class="string">'Amplitude'</span>); grid <span class="string">on</span>;
+
+subplot(2,1,2);
+plot(t, ppg_filt, <span class="string">'b'</span>); hold <span class="string">on</span>;
+plot(t, ppg_rec, <span class="string">'r--'</span>);
+legend(<span class="string">'Original'</span>,<span class="string">'Reconstructed'</span>);
+title(sprintf(<span class="string">'PPG (best \\beta=%d, CR=%.2f, PRD=%.4f%%)'</span>, <span class="keyword">...</span>
+    best_beta_ppg, results_ppg(idx_ppg).CR, results_ppg(idx_ppg).PRD_quant));
+xlabel(<span class="string">'Time (s)'</span>); ylabel(<span class="string">'Amplitude'</span>); grid <span class="string">on</span>;
+</pre>
+<img vspace="5" hspace="5" src="single_sub_analysis_02.png" alt=""> <h2 id="7">Table VI-style CR table</h2>
+<pre class="codeinput">CR_table_ecg = zeros(length(beta_list_table), length(length_list));
+CR_table_ppg = zeros(length(beta_list_table), length(length_list));
+
+<span class="keyword">for</span> bi = 1:length(beta_list_table)
+    beta = beta_list_table(bi);
+    <span class="keyword">for</span> li = 1:length(length_list)
+        L = length_list(li);
+        CR_table_ecg(bi, li) = average_CR_over_windows(ecg_filt_full, 10, beta, L, overhead_bits_table);
+        CR_table_ppg(bi, li) = average_CR_over_windows(ppg_filt_full, 10, beta, L, overhead_bits_table);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+VarNames = <span class="string">"L"</span> + string(length_list);
+T_ecg = array2table(round(CR_table_ecg,2), <span class="string">'RowNames'</span>, <span class="string">"beta"</span> + string(beta_list_table), <span class="string">'VariableNames'</span>, VarNames);
+T_ppg = array2table(round(CR_table_ppg,2), <span class="string">'RowNames'</span>, <span class="string">"beta"</span> + string(beta_list_table), <span class="string">'VariableNames'</span>, VarNames);
+
+fprintf(<span class="string">'\n=== ECG CR Table ===\n'</span>); disp(T_ecg);
+fprintf(<span class="string">'\n=== PPG CR Table ===\n'</span>); disp(T_ppg);
+
+plot_cr_table(CR_table_ecg, beta_list_table, length_list, <span class="string">'ECG: Average CR (300 Hz SF, 10-bpsm)'</span>);
+plot_cr_table(CR_table_ppg, beta_list_table, length_list, <span class="string">'PPG: Average CR (300 Hz SF, 10-bpsm)'</span>);
+</pre>
+<pre class="codeoutput">
+=== ECG CR Table ===
+             L2000    L5000    L10000    L20000    L30000    L40000
+             _____    _____    ______    ______    ______    ______
+
+    beta2    1.47      1.6      1.65      1.67      1.68      1.68 
+    beta3    1.78     1.98      2.04      2.08      2.08      2.09 
+    beta4    1.62     1.79      1.84      1.87      1.87      1.88 
+    beta5    1.47      1.6      1.64      1.66      1.66      1.67 
+    beta6    1.31     1.41      1.45      1.46      1.46      1.47 
+
+
+=== PPG CR Table ===
+             L2000    L5000    L10000    L20000    L30000    L40000
+             _____    _____    ______    ______    ______    ______
+
+    beta2    2.66     3.11       3.3      3.43       3.4      3.41 
+    beta3    2.25     2.56      2.69      2.77      2.75      2.75 
+    beta4    1.91     2.13      2.22      2.28      2.26      2.27 
+    beta5    1.66     1.83      1.89      1.93      1.92      1.93 
+    beta6    1.47      1.6      1.65      1.68      1.67      1.68 
+
+</pre>
+<img vspace="5" hspace="5" src="single_sub_analysis_03.png" alt=""> <img vspace="5" hspace="5" src="single_sub_analysis_04.png" alt=""> <h2 id="8">Fig. 11 style: CR vs length for multiple quantization levels</h2>
+<pre class="codeinput">CR_all = zeros(length(n_bits_list), length(beta_list_table), length(length_list));
+<span class="keyword">for</span> bi = 1:length(n_bits_list)
+    n_bits_cur = n_bits_list(bi);
+    <span class="keyword">for</span> li = 1:length(length_list)
+        L = length_list(li);
+        <span class="keyword">for</span> gi = 1:length(beta_list_table)
+            beta = beta_list_table(gi);
+            CR_all(bi, gi, li) = average_CR_over_windows(ecg_filt_full, n_bits_cur, beta, L, overhead_bits_table);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure(<span class="string">'Name'</span>, <span class="string">'Fig 11 style - CR vs Length'</span>, <span class="string">'Position'</span>, [50 50 1600 400]);
+colors = [1 0 0; 0 1 0; 0 0 1; 1 0 1; 0.4 0 0];
+
+<span class="keyword">for</span> bi = 1:length(n_bits_list)
+    subplot(1, length(n_bits_list), bi);
+    data = squeeze(CR_all(bi, :, :))';
+    b = bar(data, <span class="string">'grouped'</span>);
+    <span class="keyword">for</span> gi = 1:length(beta_list_table)
+        b(gi).FaceColor = colors(gi,:);
+    <span class="keyword">end</span>
+    set(gca, <span class="string">'XTickLabel'</span>, length_list/1000);
+    xlabel(<span class="string">'Sample Index (\times10^3)'</span>);
+    <span class="keyword">if</span> bi == 1
+        ylabel(<span class="string">'Compression Ratio (CR)'</span>);
+    <span class="keyword">end</span>
+    title(sprintf(<span class="string">'%d bit Quantization Level'</span>, n_bits_list(bi)));
+    grid <span class="string">on</span>;
+<span class="keyword">end</span>
+legend(arrayfun(@(x) num2str(x), beta_list_table, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+    <span class="string">'Orientation'</span>, <span class="string">'horizontal'</span>, <span class="string">'Position'</span>, [0.35 0.95 0.3 0.05]);
+sgtitle(<span class="string">'Fig. 11 style: Variation of average CR with signal length (ECG)'</span>);
+</pre>
+<img vspace="5" hspace="5" src="single_sub_analysis_05.png" alt=""> <h2 id="9">Fig. 12 style: PRD vs quantization level</h2>
+<pre class="codeinput">PRD_all = zeros(numel(length_list), numel(n_bits_list));
+
+<span class="keyword">for</span> bi = 1:numel(n_bits_list)
+    n_bits_cur = n_bits_list(bi);
+    <span class="keyword">for</span> li = 1:numel(length_list)
+        L = length_list(li);
+        n_windows = floor(length(ecg_filt_full) / L);
+        prd_vals = zeros(1, n_windows);
+        <span class="keyword">for</span> w = 1:n_windows
+            idx1 = (w-1)*L + 1;
+            idx2 = w*L;
+            seg = ecg_filt_full(idx1:idx2);
+            [q, xmin, xmax] = quantize_signal(seg, n_bits_cur);
+            seg_q = dequantize(q, xmin, xmax, n_bits_cur);
+            prd_vals(w) = prd_metric(seg, seg_q);
+        <span class="keyword">end</span>
+        PRD_all(li, bi) = mean(prd_vals);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure(<span class="string">'Name'</span>, <span class="string">'PRD vs Quantization Level'</span>, <span class="string">'Position'</span>, [100 100 900 650]);
+subplot(2,1,1);
+bar(n_bits_list, PRD_all', <span class="string">'grouped'</span>);
+xlabel(<span class="string">'Quantization level'</span>);
+ylabel(<span class="string">'PRD (%)'</span>);
+title(<span class="string">'Variation of average PRD with quantization level (ECG)'</span>);
+legend(arrayfun(@(x) num2str(x), length_list, <span class="string">'UniformOutput'</span>, false), <span class="keyword">...</span>
+    <span class="string">'Location'</span>, <span class="string">'northeast'</span>);
+grid <span class="string">on</span>;
+
+subplot(2,1,2);
+axis <span class="string">off</span>;
+
+rowNames = cell(numel(length_list),1);
+<span class="keyword">for</span> i = 1:numel(length_list)
+    rowNames{i} = num2str(length_list(i));
+<span class="keyword">end</span>
+
+colNames = cell(numel(n_bits_list),1);
+<span class="keyword">for</span> j = 1:numel(n_bits_list)
+    colNames{j} = [<span class="string">'bits'</span> num2str(n_bits_list(j))];
+<span class="keyword">end</span>
+
+uitable(<span class="string">'Data'</span>, round(PRD_all,4), <span class="keyword">...</span>
+    <span class="string">'RowName'</span>, rowNames, <span class="keyword">...</span>
+    <span class="string">'ColumnName'</span>, colNames, <span class="keyword">...</span>
+    <span class="string">'Units'</span>, <span class="string">'normalized'</span>, <span class="keyword">...</span>
+    <span class="string">'Position'</span>, [0.10 -0.4 0.80 0.85]);
+
+T_prd = array2table(round(PRD_all,4), <span class="keyword">...</span>
+    <span class="string">'RowNames'</span>, rowNames, <span class="keyword">...</span>
+    <span class="string">'VariableNames'</span>, colNames);
+
+fprintf(<span class="string">'\n=== PRD Table ===\n'</span>);
+disp(T_prd);
+</pre>
+<pre class="codeoutput">
+=== PRD Table ===
+             bits6     bits8     bits10    bits12
+             ______    ______    ______    ______
+
+    2000     4.3468    1.0662     0.266    0.0664
+    5000     4.3807     1.076    0.2679    0.0668
+    10000     4.408     1.079    0.2689    0.0671
+    20000    4.4344    1.0852    0.2703    0.0677
+    30000    4.4339    1.0842    0.2711    0.0675
+    40000    4.4537    1.0863    0.2704    0.0675
+
+</pre>
+<img vspace="5" hspace="5" src="single_sub_analysis_06.png" alt=""> <h2 id="10">Best beta summary</h2>
+<pre class="codeinput">fprintf(<span class="string">'\n=== Best beta per quantization level (PPG) ===\n'</span>);
+<span class="keyword">for</span> bi = 1:length(n_bits_list)
+    avgCR = mean(squeeze(CR_all(bi,:,:)), 2);
+    [~, best_idx] = max(avgCR);
+    fprintf(<span class="string">'n_bits=%d -&gt; best beta=%d (avg CR=%.2f)\n'</span>, <span class="keyword">...</span>
+        n_bits_list(bi), beta_list_table(best_idx), avgCR(best_idx));
+<span class="keyword">end</span>
+</pre>
+<pre class="codeoutput">
+=== Best beta per quantization level (PPG) ===
+n_bits=6 -&gt; best beta=2 (avg CR=2.34)
+n_bits=8 -&gt; best beta=2 (avg CR=2.21)
+n_bits=10 -&gt; best beta=3 (avg CR=2.01)
+n_bits=12 -&gt; best beta=5 (avg CR=1.75)
+</pre>
+<h2 id="11">===================== Local Functions =====================</h2>
+<pre class="codeinput">
+<span class="keyword">function</span> x_filt = bandpass_filter(x, fs, f_low, f_high)
+    [b, a] = butter(2, [f_low f_high]/(fs/2), <span class="string">'bandpass'</span>);
+    x_filt = filtfilt(b, a, x);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [q, xmin, xmax] = quantize_signal(x, n_bits)
+    xmin = min(x); xmax = max(x);
+    levels = 2^n_bits - 1;
+    q = round((x - xmin) / (xmax - xmin) * levels);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> x_rec = dequantize(q, xmin, xmax, n_bits)
+    levels = 2^n_bits - 1;
+    x_rec = double(q) / levels * (xmax - xmin) + xmin;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> val = prd_metric(x, xq)
+    val = 100 * sqrt(sum((x - xq).^2) / sum(x.^2));
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> nbits = bits_needed(x)
+    <span class="keyword">if</span> isempty(x)
+        nbits = 1;
+    <span class="keyword">else</span>
+        m = max(abs(x));
+        <span class="keyword">if</span> m == 0
+            nbits = 1;
+        <span class="keyword">else</span>
+            nbits = ceil(log2(m + 2));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta)
+    [q, xmin, xmax] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    <span class="keyword">while</span> i &lt;= n
+        val = d2(i);
+        <span class="keyword">if</span> val == 0
+            run = 0;
+            <span class="keyword">while</span> i &lt;= n &amp;&amp; d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            <span class="keyword">end</span>
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> val &gt;= -beta_max &amp;&amp; val &lt;= beta_max
+                theta(end+1) = val;
+            <span class="keyword">else</span>
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            <span class="keyword">end</span>
+            i = i + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    c.theta = double(theta);
+    c.psi = double(psi);
+    c.xi = double(xi);
+    c.alpha = alpha;
+    c.beta = beta;
+    c.n_bits = n_bits;
+    c.first_q = double(q(1));
+    c.first_d1 = double(d1(1));
+    c.n_samples = length(sig);
+    c.xmin = xmin;
+    c.xmax = xmax;
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(xi);
+    c.overhead_bits = 2 * n_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> q_rec = decompress_signal(c)
+    theta = c.theta; psi = c.psi; xi = c.xi; alpha = c.alpha;
+    d2 = [];
+    psi_idx = 1; xi_idx = 1;
+
+    <span class="keyword">for</span> k = 1:length(theta)
+        v = theta(k);
+        <span class="keyword">if</span> v == 0
+            run = psi(psi_idx); psi_idx = psi_idx + 1;
+            d2 = [d2, zeros(1, run)]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+        <span class="keyword">elseif</span> v == alpha
+            d2(end+1) = xi(xi_idx); xi_idx = xi_idx + 1; <span class="comment">%#ok&lt;AGROW&gt;</span>
+        <span class="keyword">else</span>
+            d2(end+1) = v; <span class="comment">%#ok&lt;AGROW&gt;</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    d1_rec = zeros(1, c.n_samples - 1);
+    d1_rec(1) = c.first_d1;
+    <span class="keyword">if</span> ~isempty(d2)
+        d1_rec(2:end) = c.first_d1 + cumsum(d2);
+    <span class="keyword">end</span>
+
+    q_rec = zeros(1, c.n_samples);
+    q_rec(1) = c.first_q;
+    q_rec(2:end) = c.first_q + cumsum(d1_rec);
+    q_rec = round(q_rec)';
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> results = compress_evaluate_sweep(sig, n_bits, beta_list)
+    results = struct(<span class="string">'beta'</span>, {}, <span class="string">'CR'</span>, {}, <span class="string">'PRD_quant'</span>, {}, <span class="string">'lossless'</span>, {}, <span class="string">'orig_bits'</span>, {}, <span class="string">'compressed_bits'</span>, {});
+    <span class="keyword">for</span> k = 1:length(beta_list)
+        beta = beta_list(k);
+        [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta);
+        q_rec = decompress_signal(c);
+        sig_q = dequantize(q, xmin, xmax, n_bits);
+
+        results(k).beta = beta;
+        results(k).CR = (c.n_samples * n_bits) / c.total_bits;
+        results(k).PRD_quant = prd_metric(sig, sig_q);
+        results(k).lossless = isequal(round(q), q_rec);
+        results(k).orig_bits = c.n_samples * n_bits;
+        results(k).compressed_bits = c.total_bits;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> plot_cr_table(CR_table, beta_list, length_list, titleStr)
+    fig = figure(<span class="string">'Name'</span>, titleStr, <span class="string">'Position'</span>, [100 100 800 300]);
+    colNames = [<span class="string">'beta'</span>, arrayfun(@(x) num2str(x), length_list, <span class="string">'UniformOutput'</span>, false)];
+    rowData = cell(length(beta_list), length(length_list)+1);
+
+    <span class="keyword">for</span> i = 1:length(beta_list)
+        rowData{i,1} = beta_list(i);
+        <span class="keyword">for</span> j = 1:length(length_list)
+            rowData{i,j+1} = round(CR_table(i,j), 2);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    uitable(fig, <span class="string">'Data'</span>, rowData, <span class="keyword">...</span>
+        <span class="string">'ColumnName'</span>, colNames, <span class="keyword">...</span>
+        <span class="string">'RowName'</span>, repmat({<span class="string">'CR'</span>}, length(beta_list), 1), <span class="keyword">...</span>
+        <span class="string">'Units'</span>, <span class="string">'normalized'</span>, <span class="string">'Position'</span>, [0.05 0.1 0.9 0.75]);
+
+    annotation(fig, <span class="string">'textbox'</span>, [0.05 0.88 0.9 0.1], <span class="string">'String'</span>, titleStr, <span class="keyword">...</span>
+        <span class="string">'HorizontalAlignment'</span>, <span class="string">'center'</span>, <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>, <span class="keyword">...</span>
+        <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>, <span class="string">'FontSize'</span>, 11);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> CR_avg = average_CR_over_windows(sig_full, n_bits, beta, L, overhead_bits)
+    n_windows = floor(length(sig_full) / L);
+    <span class="keyword">if</span> n_windows == 0
+        CR_avg = NaN;
+        <span class="keyword">return</span>;
+    <span class="keyword">end</span>
+
+    CRs = zeros(1, n_windows);
+    <span class="keyword">for</span> w = 1:n_windows
+        seg = sig_full((w-1)*L+1 : w*L);
+        c = compress_signal_realistic(seg, n_bits, beta, overhead_bits);
+        CRs(w) = (L * n_bits) / c.total_bits;
+    <span class="keyword">end</span>
+    CR_avg = mean(CRs);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> c = compress_signal_realistic(sig, n_bits, beta, overhead_bits)
+    [q, ~, ~] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    <span class="keyword">while</span> i &lt;= n
+        val = d2(i);
+        <span class="keyword">if</span> val == 0
+            run = 0;
+            <span class="keyword">while</span> i &lt;= n &amp;&amp; d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            <span class="keyword">end</span>
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> val &gt;= -beta_max &amp;&amp; val &lt;= beta_max
+                theta(end+1) = val;
+            <span class="keyword">else</span>
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            <span class="keyword">end</span>
+            i = i + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(abs(xi));
+    c.overhead_bits = overhead_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+<span class="keyword">end</span>
+</pre>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+close all; clc; clear;
+
+%% Parameters
+fs = 300;
+filename = 'doi-10.5683-sp2-nlb8it (1)/data/csv/0009_8min_signal.csv';
+
+duration_sec = 30;
+n_bits = 12;
+beta_list = [2 3 4 5 6];
+
+n_bits_list = [6 8 10 12];
+beta_list_table = [2 3 4 5 6];
+length_list = [2000 5000 10000 20000 30000 40000];
+overhead_bits_table = 2000;
+
+%% Load data
+dataTable = readtable(filename);
+ecg_full = dataTable.ecg_y;
+ppg_full = dataTable.pleth_y;
+
+n_sel = duration_sec * fs;
+ecg = ecg_full(1:n_sel);
+ppg = ppg_full(1:n_sel);
+t = (0:n_sel-1)' / fs;
+
+%% Filter signals once
+ecg_filt = bandpass_filter(ecg, fs, 0.5, 100);
+ppg_filt = bandpass_filter(ppg, fs, 0.5, 3.4);
+
+ecg_filt_full = bandpass_filter(ecg_full, fs, 0.5, 100);
+ppg_filt_full = bandpass_filter(ppg_full, fs, 0.5, 3.4);
+
+%% CR vs beta for 30-sec segment
+results_ecg = compress_evaluate_sweep(ecg_filt, n_bits, beta_list);
+results_ppg = compress_evaluate_sweep(ppg_filt, n_bits, beta_list);
+
+fprintf('\nREPLACE_WITH_DASH_DASH- ECG Results REPLACE_WITH_DASH_DASH-\n'); disp(struct2table(results_ecg));
+fprintf('\nREPLACE_WITH_DASH_DASH- PPG Results REPLACE_WITH_DASH_DASH-\n'); disp(struct2table(results_ppg));
+
+figure('Name','CR vs Beta');
+subplot(1,2,1);
+plot([results_ecg.beta], [results_ecg.CR], '-o', 'LineWidth', 1.5); grid on;
+xlabel('\beta'); ylabel('CR'); title('ECG: CR vs \beta');
+
+subplot(1,2,2);
+plot([results_ppg.beta], [results_ppg.CR], '-o', 'LineWidth', 1.5); grid on;
+xlabel('\beta'); ylabel('CR'); title('PPG: CR vs \beta');
+
+%% Best beta reconstruction
+[~, idx_ecg] = max([results_ecg.CR]);
+[~, idx_ppg] = max([results_ppg.CR]);
+
+best_beta_ecg = results_ecg(idx_ecg).beta;
+best_beta_ppg = results_ppg(idx_ppg).beta;
+
+[c_ecg, q_ecg, xmin_e, xmax_e] = compress_signal(ecg_filt, n_bits, best_beta_ecg);
+q_rec_ecg = decompress_signal(c_ecg);
+ecg_rec = dequantize(q_rec_ecg, xmin_e, xmax_e, n_bits);
+
+[c_ppg, q_ppg, xmin_p, xmax_p] = compress_signal(ppg_filt, n_bits, best_beta_ppg);
+q_rec_ppg = decompress_signal(c_ppg);
+ppg_rec = dequantize(q_rec_ppg, xmin_p, xmax_p, n_bits);
+
+figure('Name','Original vs Reconstructed');
+subplot(2,1,1);
+plot(t, ecg_filt, 'b'); hold on;
+plot(t, ecg_rec, 'rREPLACE_WITH_DASH_DASH');
+legend('Original','Reconstructed');
+title(sprintf('ECG (best \\beta=%d, CR=%.2f, PRD=%.4f%%)', ...
+    best_beta_ecg, results_ecg(idx_ecg).CR, results_ecg(idx_ecg).PRD_quant));
+xlabel('Time (s)'); ylabel('Amplitude'); grid on;
+
+subplot(2,1,2);
+plot(t, ppg_filt, 'b'); hold on;
+plot(t, ppg_rec, 'rREPLACE_WITH_DASH_DASH');
+legend('Original','Reconstructed');
+title(sprintf('PPG (best \\beta=%d, CR=%.2f, PRD=%.4f%%)', ...
+    best_beta_ppg, results_ppg(idx_ppg).CR, results_ppg(idx_ppg).PRD_quant));
+xlabel('Time (s)'); ylabel('Amplitude'); grid on;
+
+%% Table VI-style CR table
+CR_table_ecg = zeros(length(beta_list_table), length(length_list));
+CR_table_ppg = zeros(length(beta_list_table), length(length_list));
+
+for bi = 1:length(beta_list_table)
+    beta = beta_list_table(bi);
+    for li = 1:length(length_list)
+        L = length_list(li);
+        CR_table_ecg(bi, li) = average_CR_over_windows(ecg_filt_full, 10, beta, L, overhead_bits_table);
+        CR_table_ppg(bi, li) = average_CR_over_windows(ppg_filt_full, 10, beta, L, overhead_bits_table);
+    end
+end
+
+VarNames = "L" + string(length_list);
+T_ecg = array2table(round(CR_table_ecg,2), 'RowNames', "beta" + string(beta_list_table), 'VariableNames', VarNames);
+T_ppg = array2table(round(CR_table_ppg,2), 'RowNames', "beta" + string(beta_list_table), 'VariableNames', VarNames);
+
+fprintf('\n=== ECG CR Table ===\n'); disp(T_ecg);
+fprintf('\n=== PPG CR Table ===\n'); disp(T_ppg);
+
+plot_cr_table(CR_table_ecg, beta_list_table, length_list, 'ECG: Average CR (300 Hz SF, 10-bpsm)');
+plot_cr_table(CR_table_ppg, beta_list_table, length_list, 'PPG: Average CR (300 Hz SF, 10-bpsm)');
+
+%% Fig. 11 style: CR vs length for multiple quantization levels
+CR_all = zeros(length(n_bits_list), length(beta_list_table), length(length_list));
+for bi = 1:length(n_bits_list)
+    n_bits_cur = n_bits_list(bi);
+    for li = 1:length(length_list)
+        L = length_list(li);
+        for gi = 1:length(beta_list_table)
+            beta = beta_list_table(gi);
+            CR_all(bi, gi, li) = average_CR_over_windows(ecg_filt_full, n_bits_cur, beta, L, overhead_bits_table);
+        end
+    end
+end
+
+figure('Name', 'Fig 11 style - CR vs Length', 'Position', [50 50 1600 400]);
+colors = [1 0 0; 0 1 0; 0 0 1; 1 0 1; 0.4 0 0];
+
+for bi = 1:length(n_bits_list)
+    subplot(1, length(n_bits_list), bi);
+    data = squeeze(CR_all(bi, :, :))';
+    b = bar(data, 'grouped');
+    for gi = 1:length(beta_list_table)
+        b(gi).FaceColor = colors(gi,:);
+    end
+    set(gca, 'XTickLabel', length_list/1000);
+    xlabel('Sample Index (\times10^3)');
+    if bi == 1
+        ylabel('Compression Ratio (CR)');
+    end
+    title(sprintf('%d bit Quantization Level', n_bits_list(bi)));
+    grid on;
+end
+legend(arrayfun(@(x) num2str(x), beta_list_table, 'UniformOutput', false), ...
+    'Orientation', 'horizontal', 'Position', [0.35 0.95 0.3 0.05]);
+sgtitle('Fig. 11 style: Variation of average CR with signal length (ECG)');
+
+%% Fig. 12 style: PRD vs quantization level
+PRD_all = zeros(numel(length_list), numel(n_bits_list));
+
+for bi = 1:numel(n_bits_list)
+    n_bits_cur = n_bits_list(bi);
+    for li = 1:numel(length_list)
+        L = length_list(li);
+        n_windows = floor(length(ecg_filt_full) / L);
+        prd_vals = zeros(1, n_windows);
+        for w = 1:n_windows
+            idx1 = (w-1)*L + 1;
+            idx2 = w*L;
+            seg = ecg_filt_full(idx1:idx2);
+            [q, xmin, xmax] = quantize_signal(seg, n_bits_cur);
+            seg_q = dequantize(q, xmin, xmax, n_bits_cur);
+            prd_vals(w) = prd_metric(seg, seg_q);
+        end
+        PRD_all(li, bi) = mean(prd_vals);
+    end
+end
+
+figure('Name', 'PRD vs Quantization Level', 'Position', [100 100 900 650]);
+subplot(2,1,1);
+bar(n_bits_list, PRD_all', 'grouped');
+xlabel('Quantization level');
+ylabel('PRD (%)');
+title('Variation of average PRD with quantization level (ECG)');
+legend(arrayfun(@(x) num2str(x), length_list, 'UniformOutput', false), ...
+    'Location', 'northeast');
+grid on;
+
+subplot(2,1,2);
+axis off;
+
+rowNames = cell(numel(length_list),1);
+for i = 1:numel(length_list)
+    rowNames{i} = num2str(length_list(i));
+end
+
+colNames = cell(numel(n_bits_list),1);
+for j = 1:numel(n_bits_list)
+    colNames{j} = ['bits' num2str(n_bits_list(j))];
+end
+
+uitable('Data', round(PRD_all,4), ...
+    'RowName', rowNames, ...
+    'ColumnName', colNames, ...
+    'Units', 'normalized', ...
+    'Position', [0.10 -0.4 0.80 0.85]);
+
+T_prd = array2table(round(PRD_all,4), ...
+    'RowNames', rowNames, ...
+    'VariableNames', colNames);
+
+fprintf('\n=== PRD Table ===\n');
+disp(T_prd);
+
+%% Best beta summary
+fprintf('\n=== Best beta per quantization level (PPG) ===\n');
+for bi = 1:length(n_bits_list)
+    avgCR = mean(squeeze(CR_all(bi,:,:)), 2);
+    [~, best_idx] = max(avgCR);
+    fprintf('n_bits=%d -> best beta=%d (avg CR=%.2f)\n', ...
+        n_bits_list(bi), beta_list_table(best_idx), avgCR(best_idx));
+end
+
+%% ===================== Local Functions =====================
+
+function x_filt = bandpass_filter(x, fs, f_low, f_high)
+    [b, a] = butter(2, [f_low f_high]/(fs/2), 'bandpass');
+    x_filt = filtfilt(b, a, x);
+end
+
+function [q, xmin, xmax] = quantize_signal(x, n_bits)
+    xmin = min(x); xmax = max(x);
+    levels = 2^n_bits - 1;
+    q = round((x - xmin) / (xmax - xmin) * levels);
+end
+
+function x_rec = dequantize(q, xmin, xmax, n_bits)
+    levels = 2^n_bits - 1;
+    x_rec = double(q) / levels * (xmax - xmin) + xmin;
+end
+
+function val = prd_metric(x, xq)
+    val = 100 * sqrt(sum((x - xq).^2) / sum(x.^2));
+end
+
+function nbits = bits_needed(x)
+    if isempty(x)
+        nbits = 1;
+    else
+        m = max(abs(x));
+        if m == 0
+            nbits = 1;
+        else
+            nbits = ceil(log2(m + 2));
+        end
+    end
+end
+
+function [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta)
+    [q, xmin, xmax] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    while i <= n
+        val = d2(i);
+        if val == 0
+            run = 0;
+            while i <= n && d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            end
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        else
+            if val >= -beta_max && val <= beta_max
+                theta(end+1) = val;
+            else
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            end
+            i = i + 1;
+        end
+    end
+
+    c.theta = double(theta);
+    c.psi = double(psi);
+    c.xi = double(xi);
+    c.alpha = alpha;
+    c.beta = beta;
+    c.n_bits = n_bits;
+    c.first_q = double(q(1));
+    c.first_d1 = double(d1(1));
+    c.n_samples = length(sig);
+    c.xmin = xmin;
+    c.xmax = xmax;
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(xi);
+    c.overhead_bits = 2 * n_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+end
+
+function q_rec = decompress_signal(c)
+    theta = c.theta; psi = c.psi; xi = c.xi; alpha = c.alpha;
+    d2 = [];
+    psi_idx = 1; xi_idx = 1;
+
+    for k = 1:length(theta)
+        v = theta(k);
+        if v == 0
+            run = psi(psi_idx); psi_idx = psi_idx + 1;
+            d2 = [d2, zeros(1, run)]; %#ok<AGROW>
+        elseif v == alpha
+            d2(end+1) = xi(xi_idx); xi_idx = xi_idx + 1; %#ok<AGROW>
+        else
+            d2(end+1) = v; %#ok<AGROW>
+        end
+    end
+
+    d1_rec = zeros(1, c.n_samples - 1);
+    d1_rec(1) = c.first_d1;
+    if ~isempty(d2)
+        d1_rec(2:end) = c.first_d1 + cumsum(d2);
+    end
+
+    q_rec = zeros(1, c.n_samples);
+    q_rec(1) = c.first_q;
+    q_rec(2:end) = c.first_q + cumsum(d1_rec);
+    q_rec = round(q_rec)';
+end
+
+function results = compress_evaluate_sweep(sig, n_bits, beta_list)
+    results = struct('beta', {}, 'CR', {}, 'PRD_quant', {}, 'lossless', {}, 'orig_bits', {}, 'compressed_bits', {});
+    for k = 1:length(beta_list)
+        beta = beta_list(k);
+        [c, q, xmin, xmax] = compress_signal(sig, n_bits, beta);
+        q_rec = decompress_signal(c);
+        sig_q = dequantize(q, xmin, xmax, n_bits);
+
+        results(k).beta = beta;
+        results(k).CR = (c.n_samples * n_bits) / c.total_bits;
+        results(k).PRD_quant = prd_metric(sig, sig_q);
+        results(k).lossless = isequal(round(q), q_rec);
+        results(k).orig_bits = c.n_samples * n_bits;
+        results(k).compressed_bits = c.total_bits;
+    end
+end
+
+function plot_cr_table(CR_table, beta_list, length_list, titleStr)
+    fig = figure('Name', titleStr, 'Position', [100 100 800 300]);
+    colNames = ['beta', arrayfun(@(x) num2str(x), length_list, 'UniformOutput', false)];
+    rowData = cell(length(beta_list), length(length_list)+1);
+
+    for i = 1:length(beta_list)
+        rowData{i,1} = beta_list(i);
+        for j = 1:length(length_list)
+            rowData{i,j+1} = round(CR_table(i,j), 2);
+        end
+    end
+
+    uitable(fig, 'Data', rowData, ...
+        'ColumnName', colNames, ...
+        'RowName', repmat({'CR'}, length(beta_list), 1), ...
+        'Units', 'normalized', 'Position', [0.05 0.1 0.9 0.75]);
+
+    annotation(fig, 'textbox', [0.05 0.88 0.9 0.1], 'String', titleStr, ...
+        'HorizontalAlignment', 'center', 'EdgeColor', 'none', ...
+        'FontWeight', 'bold', 'FontSize', 11);
+end
+
+function CR_avg = average_CR_over_windows(sig_full, n_bits, beta, L, overhead_bits)
+    n_windows = floor(length(sig_full) / L);
+    if n_windows == 0
+        CR_avg = NaN;
+        return;
+    end
+
+    CRs = zeros(1, n_windows);
+    for w = 1:n_windows
+        seg = sig_full((w-1)*L+1 : w*L);
+        c = compress_signal_realistic(seg, n_bits, beta, overhead_bits);
+        CRs(w) = (L * n_bits) / c.total_bits;
+    end
+    CR_avg = mean(CRs);
+end
+
+function c = compress_signal_realistic(sig, n_bits, beta, overhead_bits)
+    [q, ~, ~] = quantize_signal(sig, n_bits);
+    q = double(q);
+    d1 = diff(q);
+    d2 = diff(d1);
+
+    beta_max = 2^(beta-1) - 1;
+    alpha = beta_max + 1;
+
+    theta = []; psi = []; xi = [];
+    i = 1; n = length(d2);
+
+    while i <= n
+        val = d2(i);
+        if val == 0
+            run = 0;
+            while i <= n && d2(i) == 0
+                run = run + 1;
+                i = i + 1;
+            end
+            theta(end+1) = 0;
+            psi(end+1) = run;
+        else
+            if val >= -beta_max && val <= beta_max
+                theta(end+1) = val;
+            else
+                theta(end+1) = alpha;
+                xi(end+1) = val;
+            end
+            i = i + 1;
+        end
+    end
+
+    c.theta_bits = length(theta) * beta;
+    c.psi_bits = length(psi) * bits_needed(psi);
+    c.xi_bits = length(xi) * bits_needed(abs(xi));
+    c.overhead_bits = overhead_bits;
+    c.total_bits = c.theta_bits + c.psi_bits + c.xi_bits + c.overhead_bits;
+end
+##### SOURCE END #####
+-->
+</body>
+</html>
